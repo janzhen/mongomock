@@ -27,6 +27,8 @@ except ImportError:
         BEFORE = False
         AFTER = True
 
+from pymongo import IndexModel
+
 from sentinels import NOTHING
 from six import iteritems
 from six import iterkeys
@@ -1064,6 +1066,16 @@ class Collection(object):
     def create_index(self, key_or_list, cache_for=300, **kwargs):
         if 'unique' in kwargs and kwargs['unique']:
             self._uniques.append(helpers._index_list(key_or_list))
+
+    def create_indexes(self, indexes):
+        if not isinstance(indexes, list):
+            raise TypeError("indexes must be a list")
+        for index in indexes:
+            if not isinstance(index, IndexModel):
+                    raise TypeError("%r is not an instance of "
+                                    "pymongo.operations.IndexModel" % (index,))
+            if index.document.get('unique', False):
+                self._uniques.append(index.document['key'].items())
 
     def drop_index(self, index_or_name):
         pass
