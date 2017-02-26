@@ -39,7 +39,7 @@ class Database(object):
         return result
 
     def get_collection(self, name, codec_options=None, read_preference=None,
-                       write_concern=None):
+                       write_concern=None, read_concern=None):
         collection = self._collections.get(name)
         if collection is None:
             collection = self._collections[name] = Collection(self, name)
